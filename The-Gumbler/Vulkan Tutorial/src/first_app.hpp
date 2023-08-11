@@ -4,18 +4,15 @@
 
 namespace tga
 {
-class FirstApp
-{
-public:
-	static constexpr int WITDH = 800;
-	static constexpr int HEIGHT = 600;
+	class FirstApp
+	{
+	public:
+		static constexpr int WITDH = 800;
+		static constexpr int HEIGHT = 600;
 
-	void Run();
+		void Run();
 
-private:
-	TgaWindow tgaWindow{ WITDH, HEIGHT, "boo!" };
-};
-
-
+	private:
+		TgaWindow tgaWindow{ WITDH, HEIGHT, "boo!" };
+	};
 }
-
