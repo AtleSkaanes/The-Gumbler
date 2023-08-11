@@ -1,6 +1,7 @@
 #pragma once
 
 #include "atle_window.hpp"
+#include "atle_pipeline.hpp"
 
 namespace atle
 {
@@ -14,7 +15,7 @@ namespace atle
 
 	private:
 		AtleWindow atleWindow{ WIDTH, HEIGHT, "AAAAAAAA" };
-
+		AtlePipeline atlePipeline{ "shaders/simple_shader.vert.spv", "shaders/simple_shader.frag.spv" };
 	};
 
 } // namespace atle

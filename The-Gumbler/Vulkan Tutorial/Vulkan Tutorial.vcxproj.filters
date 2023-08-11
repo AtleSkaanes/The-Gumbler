@@ -24,6 +24,12 @@
     <ClCompile Include="src\first_app.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Source.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\atle_pipeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\atle_window.hpp">
@@ -32,5 +38,15 @@
     <ClInclude Include="src\first_app.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\atle_pipeline.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\simple_shader.vert" />
+    <None Include="shaders\simple_shader.frag" />
+    <None Include="other\compile.bat">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
