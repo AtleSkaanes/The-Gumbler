@@ -24,6 +24,9 @@
     <ClCompile Include="src\first_app.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\tga_pipeline.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\tga_window.hpp">
@@ -32,5 +35,17 @@
     <ClInclude Include="src\first_app.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\tga_pipeline.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\simple_shader.vert" />
+    <None Include="shaders\simple_shader.frag" />
+    <None Include="other_files\compile.bat">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="shaders\simple_shader.frag.spv" />
+    <None Include="shaders\simple_shader.vert.spv" />
   </ItemGroup>
 </Project>

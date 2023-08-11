@@ -155,11 +155,20 @@
   <ItemGroup>
     <ClCompile Include="src\first_app.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\tga_pipeline.cpp" />
     <ClCompile Include="src\tga_window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\first_app.hpp" />
+    <ClInclude Include="src\tga_pipeline.hpp" />
     <ClInclude Include="src\tga_window.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="other_files\compile.bat" />
+    <None Include="shaders\simple_shader.frag" />
+    <None Include="shaders\simple_shader.frag.spv" />
+    <None Include="shaders\simple_shader.vert" />
+    <None Include="shaders\simple_shader.vert.spv" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
