@@ -155,11 +155,13 @@
   <ItemGroup>
     <ClCompile Include="src\first_app.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\tga_device.cpp" />
     <ClCompile Include="src\tga_pipeline.cpp" />
     <ClCompile Include="src\tga_window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\first_app.hpp" />
+    <ClInclude Include="src\tga_device.hpp" />
     <ClInclude Include="src\tga_pipeline.hpp" />
     <ClInclude Include="src\tga_window.hpp" />
   </ItemGroup>

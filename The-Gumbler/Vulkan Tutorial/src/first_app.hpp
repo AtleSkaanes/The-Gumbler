@@ -2,6 +2,7 @@
 
 #include "tga_window.hpp"
 #include "tga_pipeline.hpp"
+#include "tga_device.hpp"
 
 namespace tga
 {
@@ -15,6 +16,11 @@ namespace tga
 
 	private:
 		TgaWindow tgaWindow{ WITDH, HEIGHT, "boo!" };
-		TgaPipeline tgaPipeline{ "shaders/simple_shader.vert.spv", "shaders/simple_shader.frag.spv" };
+		TgaDevice tgaDevice{ tgaWindow };
+		TgaPipeline tgaPipeline{
+			tgaDevice,
+			"shaders/simple_shader.vert.spv",
+			"shaders/simple_shader.frag.spv",
+			TgaPipeline::DefaultPipelineConfigInfo(WITDH, HEIGHT)};
 	};
 }

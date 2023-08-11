@@ -1,6 +1,6 @@
 #pragma once
 
-#define GLEW_INCLUDE_VULKAN
+#define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 #include <string>
 
@@ -16,6 +16,8 @@ namespace tga
 		TgaWindow& operator=(const TgaWindow&) = delete;
 
 		bool ShouldClose() { return glfwWindowShouldClose(window); }
+
+		void CreateWindowSurface(VkInstance instance, VkSurfaceKHR* surface);
 
 	private:
 		void initWindow();

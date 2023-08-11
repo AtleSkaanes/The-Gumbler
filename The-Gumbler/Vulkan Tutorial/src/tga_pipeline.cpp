@@ -6,9 +6,14 @@
 
 namespace tga
 {
-	TgaPipeline::TgaPipeline(const std::string& vertFilepath, const std::string& fragFilepath)
+	TgaPipeline::TgaPipeline(
+		TgaDevice& device,
+		const std::string& vertFilepath,
+		const std::string& fragFilepath,
+		const PipelineConfigInfo& configInfo)
+		: tgaDevice{device}
 	{
-		CreateGraphicsPipeline(vertFilepath, fragFilepath);
+		CreateGraphicsPipeline(vertFilepath, fragFilepath, configInfo);
 	}
 
 	std::vector<char> TgaPipeline::ReadFile(const std::string& filepath)
@@ -29,7 +34,10 @@ namespace tga
 		return buffer;
 	}
 
-	void TgaPipeline::CreateGraphicsPipeline(const std::string& vertFilepath, const std::string& fragFilepath)
+	void TgaPipeline::CreateGraphicsPipeline(
+		const std::string& vertFilepath,
+		const std::string& fragFilepath,
+		const PipelineConfigInfo& configInfo)
 	{
 		std::vector<char> vertCode = ReadFile(vertFilepath);
 		std::vector<char> fragCode = ReadFile(fragFilepath);
@@ -37,6 +45,24 @@ namespace tga
 		std::cout << "Vertex Shader Code Size: " << vertCode.size() << '\n';
 		std::cout << "Fragment Shader Code Size: " << fragCode.size() << std::endl;
 
+	}
+
+	void TgaPipeline::CreateShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule)
+	{
+		VkShaderModuleCreateInfo createInfo{};
+		createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+		createInfo.codeSize = code.size();
+		createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
+
+		if (vkCreateShaderModule(tgaDevice.device(), &createInfo, nullptr, shaderModule) != VK_SUCCESS)
+			throw std::runtime_error("failed to create shader module");
+	}
+
+	PipelineConfigInfo TgaPipeline::DefaultPipelineConfigInfo(uint32_t width, uint32_t height)
+	{
+		PipelineConfigInfo configInfo{};
+
+		return configInfo;
 	}
 
 } // namespace tga
