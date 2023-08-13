@@ -18,6 +18,8 @@ namespace atle
 
 		bool ShouldClose() { return glfwWindowShouldClose(window); }
 
+		void CreateWindowSurface(VkInstance instance, VkSurfaceKHR* surface);
+
 	private:
 		void initWindow();
 

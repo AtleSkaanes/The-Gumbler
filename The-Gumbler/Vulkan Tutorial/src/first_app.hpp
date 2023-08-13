@@ -2,6 +2,7 @@
 
 #include "atle_window.hpp"
 #include "atle_pipeline.hpp"
+#include "atle_device.hpp"
 
 namespace atle
 {
@@ -15,7 +16,11 @@ namespace atle
 
 	private:
 		AtleWindow atleWindow{ WIDTH, HEIGHT, "AAAAAAAA" };
-		AtlePipeline atlePipeline{ "shaders/simple_shader.vert.spv", "shaders/simple_shader.frag.spv" };
+		AtleDevice atleDevice{ atleWindow };
+		AtlePipeline atlePipeline{ atleDevice,
+									"shaders/simple_shader.vert.spv",
+									"shaders/simple_shader.frag.spv",
+									AtlePipeline::DefaultPipelineConfigInfo(WIDTH, HEIGHT)};
 	};
 
 } // namespace atle

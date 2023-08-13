@@ -10,4 +10,5 @@ namespace atle
 			glfwPollEvents();
 		}
 	}
+
 } // namespace atle

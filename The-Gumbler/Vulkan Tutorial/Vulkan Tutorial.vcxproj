@@ -153,13 +153,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\atle_device.cpp" />
     <ClCompile Include="src\atle_pipeline.cpp" />
-    <ClCompile Include="src\atle_Window.cpp" />
+    <ClCompile Include="src\atle_window.cpp" />
     <ClCompile Include="src\first_app.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Source.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\atle_device.hpp" />
     <ClInclude Include="src\atle_pipeline.hpp" />
     <ClInclude Include="src\atle_window.hpp" />
     <ClInclude Include="src\first_app.hpp" />
