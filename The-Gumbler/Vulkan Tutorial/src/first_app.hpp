@@ -3,6 +3,12 @@
 #include "atle_window.hpp"
 #include "atle_pipeline.hpp"
 #include "atle_device.hpp"
+#include "atle_swap_chain.hpp"
+
+// std
+#include <memory>
+#include <vector>
+
 
 namespace atle
 {
@@ -12,15 +18,29 @@ namespace atle
 		static constexpr int WIDTH = 800;
 		static constexpr int HEIGHT = 600;
 
+
+		FirstApp();
+		~FirstApp();
+
+		FirstApp(const FirstApp&) = delete;
+		FirstApp& operator=(const FirstApp&) = delete;
+
 		void Run();
 
 	private:
+		void CreatePiepelineLayout();
+		void CreatePipeline();
+		void CreateCommandBuffers();
+		void DrawFrame();
+
 		AtleWindow atleWindow{ WIDTH, HEIGHT, "AAAAAAAA" };
 		AtleDevice atleDevice{ atleWindow };
-		AtlePipeline atlePipeline{ atleDevice,
-									"shaders/simple_shader.vert.spv",
-									"shaders/simple_shader.frag.spv",
-									AtlePipeline::DefaultPipelineConfigInfo(WIDTH, HEIGHT)};
+		AtleSwapChain atleSwapChain{ atleDevice, atleWindow.GetExtent() };
+		std::unique_ptr<AtlePipeline> atlePipeline;
+
+		VkPipelineLayout pipelineLayout;
+		std::vector<VkCommandBuffer> commandBuffers;
+
 	};
 
 } // namespace atle

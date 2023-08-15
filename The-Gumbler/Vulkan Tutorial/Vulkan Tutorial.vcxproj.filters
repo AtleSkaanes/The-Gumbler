@@ -33,6 +33,9 @@
     <ClCompile Include="src\atle_device.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\atle_swap_chain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\atle_window.hpp">
@@ -45,6 +48,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\atle_device.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\atle_swap_chain.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
