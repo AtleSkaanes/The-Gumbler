@@ -7,7 +7,21 @@
 namespace tga
 {
 
-	struct PipelineConfigInfo{};
+	struct PipelineConfigInfo
+	{
+		VkViewport viewport;
+		VkRect2D scissor;
+		VkPipelineViewportStateCreateInfo viewportInfo;
+		VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo;
+		VkPipelineRasterizationStateCreateInfo rasterizationInfo;
+		VkPipelineMultisampleStateCreateInfo multisampleInfo;
+		VkPipelineColorBlendStateCreateInfo colorBlendInfo;
+		VkPipelineDepthStencilStateCreateInfo depthStencilInfo;
+		VkPipelineColorBlendAttachmentState colorBlendAttachment;
+		VkPipelineLayout pipelineLayout = nullptr;
+		VkRenderPass renderPass = nullptr;
+		uint32_t subpass = 0;
+	};
 
 	class TgaPipeline
 	{
@@ -18,7 +32,7 @@ namespace tga
 			const std::string& fragFilepath,
 			const PipelineConfigInfo& configInfo);
 
-		~TgaPipeline() {};
+		~TgaPipeline();
 
 		TgaPipeline(const TgaPipeline&) = delete;
 		void operator=(const TgaPipeline&) = delete;
