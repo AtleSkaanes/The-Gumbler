@@ -16,6 +16,7 @@ namespace tga
 		TgaWindow& operator=(const TgaWindow&) = delete;
 
 		bool ShouldClose() { return glfwWindowShouldClose(window); }
+		VkExtent2D GetExtent() { return { static_cast<uint32_t>(width), static_cast<uint32_t>(height) }; }
 
 		void CreateWindowSurface(VkInstance instance, VkSurfaceKHR* surface);
 
