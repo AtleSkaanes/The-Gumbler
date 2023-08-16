@@ -113,8 +113,6 @@ namespace tga
 
 		if (vkCreateGraphicsPipelines(tgaDevice.device(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline))
 			throw std::runtime_error("failed to create graphics pipeline");
-
-
 	}
 
 	void TgaPipeline::CreateShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule)
@@ -126,6 +124,11 @@ namespace tga
 
 		if (vkCreateShaderModule(tgaDevice.device(), &createInfo, nullptr, shaderModule) != VK_SUCCESS)
 			throw std::runtime_error("failed to create shader module");
+	}
+
+	void TgaPipeline::bind(VkCommandBuffer commandBuffer)
+	{
+		vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
 	}
 
 	PipelineConfigInfo TgaPipeline::DefaultPipelineConfigInfo(uint32_t width, uint32_t height)

@@ -7,7 +7,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "The-Gumbler", "The-Gumbler\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Test Game", "Test Game\Test Game.vcxproj", "{EEC0114C-B856-491A-8C33-733BF8770B63}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Vulkan Tutorial", "Vulkan Tutorial\Vulkan Tutorial.vcxproj", "{AFF5273F-371C-4C86-A983-723134327843}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Vulkan-Tutorial", "Vulkan-Tutorial\Vulkan Tutorial.vcxproj", "{AFF5273F-371C-4C86-A983-723134327843}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
