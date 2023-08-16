@@ -1,3 +1,2 @@
-D:\Dev\.LIBRARIES\SDK's\VulcanSDK\Vulkan1.3.250.1\Bin\glslc.exe ..\shaders\*.vert -o ..\shaders\*.spv
-D:\Dev\.LIBRARIES\SDK's\VulcanSDK\Vulkan1.3.250.1\Bin\glslc.exe ..\shaders\simple_shader.frag -o ..\shaders\simple_shader.frag.spv
-pause
+forfiles /P shaders /S /M *.vert /C "cmd /c glslc @PATH -o @PATH.spv"
+forfiles /P shaders /S /M *.frag /C "cmd /c glslc @PATH -o @PATH.spv"
