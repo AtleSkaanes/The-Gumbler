@@ -8,6 +8,7 @@ namespace tga
 
 	FirstApp::FirstApp()
 	{
+		LoadModels();
 		CreatePipelineLayout();
 		CreatePipeline();
 		CreateCommandBuffers();
@@ -26,6 +27,19 @@ namespace tga
 		}
 
 		vkDeviceWaitIdle(tgaDevice.device());
+	}
+
+
+	void FirstApp::LoadModels()
+	{
+		std::array<TgaModel::Vertex, 3> verticies{{
+			{{0.0f, -0.75f}},
+			{{0.75f, 0.75f}},
+			{{-0.75f, 0.75f}}
+		}};
+
+
+		tgaModel = std::make_unique<TgaModel>(tgaDevice, SierpinskiTriangle(verticies, 8));
 	}
 
 	void FirstApp::CreatePipelineLayout()
@@ -91,7 +105,8 @@ namespace tga
 			vkCmdBeginRenderPass(commandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
 			tgaPipeline->bind(commandBuffers[i]);
-			vkCmdDraw(commandBuffers[i], 3, 1, 0, 0);
+			tgaModel->Bind(commandBuffers[i]);
+			tgaModel->Draw(commandBuffers[i]);
 
 			vkCmdEndRenderPass(commandBuffers[i]);
 			if (vkEndCommandBuffer(commandBuffers[i]) != VK_SUCCESS)
@@ -109,6 +124,50 @@ namespace tga
 		result = tgaSwapChain.submitCommandBuffers(&commandBuffers[imageIndex], &imageIndex);
 		if (result != VK_SUCCESS)
 			throw std::runtime_error("failed to present swap chain image!");
+	}
+
+	std::vector<TgaModel::Vertex> FirstApp::SierpinskiTriangle(const std::array<TgaModel::Vertex, 3>& input, uint8_t depth)
+	{
+
+		// Generate the upsidedown inverted triangle
+		std::array<TgaModel::Vertex, 3> upsideTriangle{{
+			{{(input[0].position.x + input[2].position.x) / 2, (input[0].position.y + input[2].position.y) / 2}},
+			{{(input[0].position.x + input[1].position.x) / 2, (input[0].position.y + input[1].position.y) / 2}},
+			{{(input[1].position.x + input[2].position.x) / 2, (input[1].position.y + input[2].position.y) / 2}}
+			}};
+
+		std::array<std::array<TgaModel::Vertex, 3>, 3> subTriangles{{
+			// Triangle 1
+			{{
+			{{input[0].position}},
+			{{upsideTriangle[1].position}},
+			{{upsideTriangle[0].position}}
+			}},
+			// Triangle 2
+			{{
+			{{upsideTriangle[1].position}},
+			{{input[1].position}},
+			{{upsideTriangle[2].position}}
+			}},
+			// Triangle 3
+			{{
+			{{upsideTriangle[0].position}},
+			{{upsideTriangle[2].position}},
+			{{input[2].position}}
+			}}
+			}};
+
+		if (depth <= 1)
+			return std::vector<TgaModel::Vertex>{input[0], input[1], input[2]};
+
+		std::vector<TgaModel::Vertex> verticies{};
+		for (const std::array<TgaModel::Vertex, 3>& triangle: subTriangles)
+		{
+			auto newSubTriangles = SierpinskiTriangle(triangle, depth - 1);
+			verticies.insert(std::end(verticies), std::begin(newSubTriangles), std::end(newSubTriangles));
+		}
+
+		return verticies;
 	}
 
 } // namespace tga
