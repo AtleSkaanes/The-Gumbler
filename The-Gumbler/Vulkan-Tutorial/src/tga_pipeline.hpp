@@ -9,14 +9,20 @@ namespace tga
 
 	struct PipelineConfigInfo
 	{
-		VkViewport viewport;
-		VkRect2D scissor;
+		PipelineConfigInfo() = default;
+
+		PipelineConfigInfo(const PipelineConfigInfo&) = delete;
+		PipelineConfigInfo& operator=(const PipelineConfigInfo&) = delete;
+
+		VkPipelineViewportStateCreateInfo viewportInfo;
 		VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo;
 		VkPipelineRasterizationStateCreateInfo rasterizationInfo;
 		VkPipelineMultisampleStateCreateInfo multisampleInfo;
 		VkPipelineColorBlendStateCreateInfo colorBlendInfo;
 		VkPipelineDepthStencilStateCreateInfo depthStencilInfo;
 		VkPipelineColorBlendAttachmentState colorBlendAttachment;
+		VkPipelineDynamicStateCreateInfo dynamicStateInfo;
+		std::vector<VkDynamicState> dynamicStateEnables;
 		VkPipelineLayout pipelineLayout = nullptr;
 		VkRenderPass renderPass = nullptr;
 		uint32_t subpass = 0;
@@ -33,11 +39,14 @@ namespace tga
 
 		~TgaPipeline();
 
+		TgaPipeline() = default;
+
 		TgaPipeline(const TgaPipeline&) = delete;
-		void operator=(const TgaPipeline&) = delete;
+		TgaPipeline& operator=(const TgaPipeline&) = delete;
 
 		void bind(VkCommandBuffer commandBuffer);
-		static PipelineConfigInfo DefaultPipelineConfigInfo(uint32_t width, uint32_t height);
+
+		static void DefaultPipelineConfigInfo(PipelineConfigInfo& configInfo);
 
 	private:
 		static std::vector<char> ReadFile(const std::string& filepath);

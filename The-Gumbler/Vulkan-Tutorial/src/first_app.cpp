@@ -10,7 +10,7 @@ namespace tga
 	{
 		LoadModels();
 		CreatePipelineLayout();
-		CreatePipeline();
+		RecreateSwapChain();
 		CreateCommandBuffers();
 	}
 	FirstApp::~FirstApp()
@@ -32,14 +32,14 @@ namespace tga
 
 	void FirstApp::LoadModels()
 	{
-		std::array<TgaModel::Vertex, 3> verticies{{
-			{{0.0f, -0.75f}},
-			{{0.75f, 0.75f}},
-			{{-0.75f, 0.75f}}
-		}};
+		std::vector<TgaModel::Vertex> verticies{
+			{{0.0f, -0.75f}, {1.0f, 0.0f, 0.0f}},
+			{{0.75f, 0.75f}, {0.0f, 1.0f, 0.0f}},
+			{{-0.75f, 0.75f}, {0.0f, 0.0f, 1.0f}}
+		};
 
 
-		tgaModel = std::make_unique<TgaModel>(tgaDevice, SierpinskiTriangle(verticies, 8));
+		tgaModel = std::make_unique<TgaModel>(tgaDevice, verticies);
 	}
 
 	void FirstApp::CreatePipelineLayout()
@@ -56,9 +56,9 @@ namespace tga
 
 	void FirstApp::CreatePipeline()
 	{
-		auto pipelineConfig =
-			TgaPipeline::DefaultPipelineConfigInfo(tgaSwapChain.width(), tgaSwapChain.height());
-		pipelineConfig.renderPass = tgaSwapChain.getRenderPass();
+		PipelineConfigInfo pipelineConfig{};
+		TgaPipeline::DefaultPipelineConfigInfo(pipelineConfig);
+		pipelineConfig.renderPass = tgaSwapChain->getRenderPass();
 		pipelineConfig.pipelineLayout = pipelineLayout;
 		tgaPipeline = std::make_unique<TgaPipeline>(
 			tgaDevice,
@@ -67,9 +67,35 @@ namespace tga
 			pipelineConfig);
 	}
 
+	void FirstApp::RecreateSwapChain()
+	{
+		auto extent = tgaWindow.GetExtent();
+		while (extent.width == 0 || extent.height == 0)
+		{
+			extent = tgaWindow.GetExtent();
+			glfwWaitEvents();
+		}
+
+		vkDeviceWaitIdle(tgaDevice.device());
+
+		if (tgaSwapChain == nullptr)
+			tgaSwapChain = std::make_unique<TgaSwapChain>(tgaDevice, extent);
+		else
+		{
+			tgaSwapChain = std::make_unique<TgaSwapChain>(tgaDevice, extent, std::move(tgaSwapChain));
+			if (tgaSwapChain->imageCount() != commandBuffers.size())
+			{
+				FreeCommandBuffers();
+				CreateCommandBuffers();
+			}
+		}
+
+		CreatePipeline();
+	}
+
 	void FirstApp::CreateCommandBuffers()
 	{
-		commandBuffers.resize(tgaSwapChain.imageCount());
+		commandBuffers.resize(tgaSwapChain->imageCount());
 
 		VkCommandBufferAllocateInfo allocInfo{};
 		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -79,53 +105,85 @@ namespace tga
 
 		if (vkAllocateCommandBuffers(tgaDevice.device(), &allocInfo, commandBuffers.data()) != VK_SUCCESS)
 			throw std::runtime_error("failed to allocate command buffers!");
+	}
 
-		for (int i = 0; i < commandBuffers.size(); i++)
-		{
-			VkCommandBufferBeginInfo beginInfo{};
-			beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+	void FirstApp::FreeCommandBuffers()
+	{
+		vkFreeCommandBuffers(tgaDevice.device(), tgaDevice.getCommandPool(), static_cast<uint32_t>(commandBuffers.size()), commandBuffers.data());
+		commandBuffers.clear();
+	}
 
-			if (vkBeginCommandBuffer(commandBuffers[i], &beginInfo) != VK_SUCCESS)
-				throw std::runtime_error("failed to begin recording command buffer!");
+	void FirstApp::RecordCommandBuffer(int imageIndex)
+	{
+		VkCommandBufferBeginInfo beginInfo{};
+		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
-			VkRenderPassBeginInfo renderPassInfo{};
-			renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-			renderPassInfo.renderPass = tgaSwapChain.getRenderPass();
-			renderPassInfo.framebuffer = tgaSwapChain.getFrameBuffer(i);
+		if (vkBeginCommandBuffer(commandBuffers[imageIndex], &beginInfo) != VK_SUCCESS)
+			throw std::runtime_error("failed to begin recording command buffer!");
 
-			renderPassInfo.renderArea.offset = { 0, 0 };
-			renderPassInfo.renderArea.extent = tgaSwapChain.getSwapChainExtent();
+		VkRenderPassBeginInfo renderPassInfo{};
+		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+		renderPassInfo.renderPass = tgaSwapChain->getRenderPass();
+		renderPassInfo.framebuffer = tgaSwapChain->getFrameBuffer(imageIndex);
 
-			std::array<VkClearValue, 2> clearValues{};
-			clearValues[0].color = { 0.1f, 0.1f, 0.1f, 1.0f };
-			clearValues[1].depthStencil = { 1.0f, 0 };
-			renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
-			renderPassInfo.pClearValues = clearValues.data();
+		renderPassInfo.renderArea.offset = { 0, 0 };
+		renderPassInfo.renderArea.extent = tgaSwapChain->getSwapChainExtent();
 
-			vkCmdBeginRenderPass(commandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+		std::array<VkClearValue, 2> clearValues{};
+		clearValues[0].color = { 0.1f, 0.1f, 0.1f, 1.0f };
+		clearValues[1].depthStencil = { 1.0f, 0 };
+		renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
+		renderPassInfo.pClearValues = clearValues.data();
 
-			tgaPipeline->bind(commandBuffers[i]);
-			tgaModel->Bind(commandBuffers[i]);
-			tgaModel->Draw(commandBuffers[i]);
+		vkCmdBeginRenderPass(commandBuffers[imageIndex], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-			vkCmdEndRenderPass(commandBuffers[i]);
-			if (vkEndCommandBuffer(commandBuffers[i]) != VK_SUCCESS)
-				throw std::runtime_error("failed to record command buffer");
-		}
+		VkViewport viewport{};
+		viewport.x = 0.0f;
+		viewport.y = 0.0f;
+		viewport.width = static_cast<float>(tgaSwapChain->getSwapChainExtent().width);
+		viewport.height = static_cast<float>(tgaSwapChain->getSwapChainExtent().height);
+		viewport.minDepth = 0.0f;
+		viewport.maxDepth = 1.0f;
+		VkRect2D scissor{ {0, 0}, tgaSwapChain->getSwapChainExtent() };
+		vkCmdSetViewport(commandBuffers[imageIndex], 0, 1, &viewport);
+		vkCmdSetScissor(commandBuffers[imageIndex], 0, 1, &scissor);
+
+		tgaPipeline->bind(commandBuffers[imageIndex]);
+		tgaModel->Bind(commandBuffers[imageIndex]);
+		tgaModel->Draw(commandBuffers[imageIndex]);
+
+		vkCmdEndRenderPass(commandBuffers[imageIndex]);
+		if (vkEndCommandBuffer(commandBuffers[imageIndex]) != VK_SUCCESS)
+			throw std::runtime_error("failed to record command buffer");
 	}
 
 	void FirstApp::DrawFrame()
 	{
 		uint32_t imageIndex;
-		auto result = tgaSwapChain.acquireNextImage(&imageIndex);
+		auto result = tgaSwapChain->acquireNextImage(&imageIndex);
 		if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR)
 			throw std::runtime_error("failed to acquire swap chain image!");
 
-		result = tgaSwapChain.submitCommandBuffers(&commandBuffers[imageIndex], &imageIndex);
+		if (result == VK_ERROR_OUT_OF_DATE_KHR)
+		{
+			RecreateSwapChain();
+			return;
+		}
+
+		RecordCommandBuffer(imageIndex);
+		result = tgaSwapChain->submitCommandBuffers(&commandBuffers[imageIndex], &imageIndex);
+		if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || tgaWindow.WasWindowResized())
+		{
+			tgaWindow.ResetWindowResizedFlag();
+			RecreateSwapChain();
+			return;
+		}
+
 		if (result != VK_SUCCESS)
 			throw std::runtime_error("failed to present swap chain image!");
 	}
 
+#pragma region funStuff
 	std::vector<TgaModel::Vertex> FirstApp::SierpinskiTriangle(const std::array<TgaModel::Vertex, 3>& input, uint8_t depth)
 	{
 
@@ -169,5 +227,8 @@ namespace tga
 
 		return verticies;
 	}
+
+#pragma endregion
+
 
 } // namespace tga

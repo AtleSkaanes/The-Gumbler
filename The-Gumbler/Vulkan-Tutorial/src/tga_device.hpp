@@ -34,7 +34,7 @@ namespace tga {
 
       // Not copyable or movable
       TgaDevice(const TgaDevice &) = delete;
-      void operator=(const TgaDevice &) = delete;
+      TgaDevice& operator=(const TgaDevice &) = delete;
       TgaDevice(TgaDevice &&) = delete;
       TgaDevice &operator=(TgaDevice &&) = delete;
 

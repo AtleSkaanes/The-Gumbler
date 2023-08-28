@@ -17,14 +17,18 @@ namespace tga
 
 		bool ShouldClose() { return glfwWindowShouldClose(window); }
 		VkExtent2D GetExtent() { return { static_cast<uint32_t>(width), static_cast<uint32_t>(height) }; }
+		bool WasWindowResized() { return framebufferResized; }
+		void ResetWindowResizedFlag() { framebufferResized = false; }
 
 		void CreateWindowSurface(VkInstance instance, VkSurfaceKHR* surface);
 
 	private:
+		static void FramebufferResizeCallback(GLFWwindow* window, int width, int height);
 		void initWindow();
 
-		const int width;
-		const int height;
+		int width;
+		int height;
+		bool framebufferResized = false;
 
 		std::string windowName;
 		GLFWwindow* window;
