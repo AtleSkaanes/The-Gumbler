@@ -33,6 +33,8 @@ namespace atle
 		AtlePipeline(const AtlePipeline&) = delete;
 		void operator=(const AtlePipeline&) = delete;
 
+		void bind(VkCommandBuffer commandBuffer);
+
 
 		static PipelineConfigInfo DefaultPipelineConfigInfo(uint32_t width, uint32_t height);
 	private:

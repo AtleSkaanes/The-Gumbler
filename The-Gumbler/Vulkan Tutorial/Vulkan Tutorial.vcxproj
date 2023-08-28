@@ -80,7 +80,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(ProjectDir)bin\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(ProjectDir)bin\intermediates\$(Platform)\$(Configuration)\</IntDir>
+    <IntDir>$(ProjectDir)bin\intermediates\$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <CustomBuildBeforeTargets>ClCompile</CustomBuildBeforeTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(ProjectDir)bin\$(Platform)\$(Configuration)\</OutDir>
@@ -131,6 +132,15 @@
       <AdditionalLibraryDirectories>$(SolutionDir)dependencies\libs\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>glfw3.lib;vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <CustomBuildStep>
+      <Command>other\compile.bat</Command>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <Outputs>*.spv</Outputs>
+    </CustomBuildStep>
+    <CustomBuildStep>
+      <TreatOutputAsContent>false</TreatOutputAsContent>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -153,6 +163,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\atle_model.cpp" />
     <ClCompile Include="src\atle_device.cpp" />
     <ClCompile Include="src\atle_pipeline.cpp" />
     <ClCompile Include="src\atle_window.cpp" />
@@ -167,11 +178,14 @@
     <ClInclude Include="src\atle_window.hpp" />
     <ClInclude Include="src\first_app.hpp" />
     <ClInclude Include="src\atle_swap_chain.hpp" />
+    <ClInclude Include="src\atle_model.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="other\compile.bat" />
     <None Include="shaders\simple_shader.frag" />
+    <None Include="shaders\simple_shader.frag.spv" />
     <None Include="shaders\simple_shader.vert" />
+    <None Include="shaders\simple_shader.vert.spv" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

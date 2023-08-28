@@ -4,6 +4,7 @@
 #include "atle_pipeline.hpp"
 #include "atle_device.hpp"
 #include "atle_swap_chain.hpp"
+#include "atle_model.hpp"
 
 // std
 #include <memory>
@@ -28,6 +29,7 @@ namespace atle
 		void Run();
 
 	private:
+		void LoadModels();
 		void CreatePiepelineLayout();
 		void CreatePipeline();
 		void CreateCommandBuffers();
@@ -40,6 +42,8 @@ namespace atle
 
 		VkPipelineLayout pipelineLayout;
 		std::vector<VkCommandBuffer> commandBuffers;
+
+		std::unique_ptr<AtleModel> atleModel;
 
 	};
 
