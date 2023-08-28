@@ -33,11 +33,14 @@ namespace atle
 		void CreatePiepelineLayout();
 		void CreatePipeline();
 		void CreateCommandBuffers();
+		void freeCommandBuffers();
 		void DrawFrame();
+		void RecreateSwapChain();
+		void RecordCommandBuffer(int imageIndex);
 
 		AtleWindow atleWindow{ WIDTH, HEIGHT, "AAAAAAAA" };
 		AtleDevice atleDevice{ atleWindow };
-		AtleSwapChain atleSwapChain{ atleDevice, atleWindow.GetExtent() };
+		std::unique_ptr<AtleSwapChain> atleSwapChain;
 		std::unique_ptr<AtlePipeline> atlePipeline;
 
 		VkPipelineLayout pipelineLayout;

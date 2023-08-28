@@ -35,7 +35,7 @@ namespace atle {
     
       // Not copyable or movable
       AtleDevice(const AtleDevice &) = delete;
-      void operator=(const AtleDevice &) = delete;
+      AtleDevice& operator=(const AtleDevice &) = delete;
       AtleDevice(AtleDevice &&) = delete;
       AtleDevice &operator=(AtleDevice &&) = delete;
     

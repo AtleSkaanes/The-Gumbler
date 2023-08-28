@@ -6,6 +6,7 @@
 #include <vulkan/vulkan.h>
 
 // std lib headers
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -16,10 +17,11 @@ namespace atle {
       static constexpr int MAX_FRAMES_IN_FLIGHT = 2;
     
       AtleSwapChain(AtleDevice &deviceRef, VkExtent2D windowExtent);
+      AtleSwapChain(AtleDevice &deviceRef, VkExtent2D windowExtent, std::shared_ptr<AtleSwapChain> previousSwapChain);
       ~AtleSwapChain();
     
       AtleSwapChain(const AtleSwapChain &) = delete;
-      void operator=(const AtleSwapChain &) = delete;
+      AtleSwapChain& operator=(const AtleSwapChain &) = delete;
     
       VkFramebuffer getFrameBuffer(int index) { return swapChainFramebuffers[index]; }
       VkRenderPass getRenderPass() { return renderPass; }
@@ -39,6 +41,7 @@ namespace atle {
       VkResult submitCommandBuffers(const VkCommandBuffer *buffers, uint32_t *imageIndex);
     
      private:
+    	void Init();
       void createSwapChain();
       void createImageViews();
       void createDepthResources();
@@ -69,6 +72,7 @@ namespace atle {
       VkExtent2D windowExtent;
     
       VkSwapchainKHR swapChain;
+      std::shared_ptr<AtleSwapChain> oldSwapChain;
     
       std::vector<VkSemaphore> imageAvailableSemaphores;
       std::vector<VkSemaphore> renderFinishedSemaphores;
